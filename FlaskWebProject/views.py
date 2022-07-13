@@ -3,6 +3,8 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
+from distutils.command.config import config
+import re
 from flask import render_template, flash, redirect, request, session, url_for
 from werkzeug.urls import url_parse
 from config import Config
@@ -66,8 +68,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
+            app.logger.warning('login failed')
             flash('Invalid username or password')
             return redirect(url_for('login'))
+        app.logger.info('{form.username.data} is being logged in')
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -86,7 +90,7 @@ def authorized():
     if request.args.get('code'):
         cache = _load_cache()
         # TODO: Acquire a token from a built msal app, along with the appropriate redirect URI
-        result = None
+        result = _build_msal_app(cache = cache).acquire_token_by_authorization_code(request.args['code'], scopes = config.SCOPE, redirect_uri = url_for('authorized', _external = True, _scheme = 'https'))
         if "error" in result:
             return render_template("auth_error.html", result=result)
         session["user"] = result.get("id_token_claims")
@@ -102,6 +106,7 @@ def logout():
     logout_user()
     if session.get("user"): # Used MS Login
         # Wipe out user and its token cache from session
+        app.logger.info('user just logged out')
         session.clear()
         # Also logout from your tenant's web session
         return redirect(
