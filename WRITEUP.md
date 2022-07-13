@@ -7,11 +7,21 @@
 - *Choose the appropriate solution (VM or App Service) for deploying the app*
 - *Justify your choice*
 
-Picking web App Service over VM, cause i'm tasked with deploying a small scale cms article app, which will not 
-require high maintenance and will result in lower cost than in setting up a virtual machine. To also avoid security configurations for such a manageable app, I used the App service, considering the time frame for the project, using a web App service is faster and easier to implement to me. And in case of future up scaling, scaling will be much more easier.
+#### App service
+- Using an app service is relatively cheaper
+- High Availability 
+- High Infrastructure maintenance and scaling
+- Continuous Deployment (CI / CD)
+The major challenge here, is that there is little to no control over infrastructure.
+
+#### Virtual Machine
+There is an increased complexity in Virtual machines over Web app services, although
+- High availability with an uptime of up to 99.5%
+- Can be scaled to multiple Virtual machine instances
+- Infrastructure can easily be manipulated, allowing complex controls
 
 ### Assess app changes that would change your decision.
 
 *Detail how the app and any other needs would have to change for you to change your decision in the last section.* 
 
-I probably will scale up the application in no distant time, and have no idea what level of scaling I might commence, so I will prolly be required to have more control over deployment.
+In the nearest future, I probably will scale up the application in no distant time, and have no idea what level of functionality the app will end up requiring. So I will prolly be required to have more control over deployment and Infrastructure generally. Therefore, I might have to change my decision, and use a Virtual Machine instead.
