@@ -128,8 +128,11 @@ def _save_cache(cache):
         session['token_cache'] = cache.serialize()
 
 def _build_msal_app(cache=None, authority=None):
-    # TODO: Return a ConfidentialClientApplication
-    return None
+    # Return a ConfidentialClientApplication
+    return msal.ConfidentialClientApplication(
+        Config.CLIENT_ID, authority= authority,
+        client_credential= Config.CLIENT_SECRET, token_cache= cache
+    )
 
 def _build_auth_url(authority=None, scopes=None, state=None):
     # TODO: Return the full Auth Request URL with appropriate Redirect URI
