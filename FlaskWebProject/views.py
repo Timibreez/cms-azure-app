@@ -68,10 +68,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            app.logger.warning('login failed')
+            app.logger.warning('login failed {}'.format(form.username.data))
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        app.logger.info('{form.username.data} is being logged in')
+        app.logger.info('{} is being logged in'.format(form.username.data))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -106,7 +106,7 @@ def logout():
     logout_user()
     if session.get("user"): # Used MS Login
         # Wipe out user and its token cache from session
-        app.logger.info('user just logged out')
+        app.logger.info('{} just logged out'.format(session.get('user')))
         session.clear()
         # Also logout from your tenant's web session
         return redirect(
